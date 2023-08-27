@@ -53,6 +53,10 @@ def plot_data():
         print("No data points found to plot.")
         return
     
+    # Ensure build directory exists
+    if not os.path.exists("build"):
+        os.makedirs("build")
+    
     dates, wpm_values, accuracy_values = zip(*filtered_data)
     
     # Plotting WPM
@@ -73,7 +77,7 @@ def plot_data():
 
     plt.grid(True, which="both", ls="--")
     plt.tight_layout()
-    plt.savefig('macro_wpm.png')
+    plt.savefig(os.path.join('build', 'macro_wpm.png'))
     
     # Plotting Accuracy
     plt.figure(figsize=(10, 6))
@@ -97,7 +101,7 @@ def plot_data():
 
     plt.grid(True, which="both", ls="--")
     plt.tight_layout()
-    plt.savefig('macro_accuracy.png')
+    plt.savefig(os.path.join('build', 'macro_accuracy.png'))
 
     # Aggregate WPM values by day
     wpm_by_day = defaultdict(list)
@@ -130,7 +134,7 @@ def plot_data():
     plt.legend(loc='upper left')  # Displaying the legend
     plt.grid(True, which="both", ls="--")
     plt.tight_layout()
-    plt.savefig('macro_wpm_stats.png')
+    plt.savefig(os.path.join('build', 'macro_wpm_stats.png'))
 
     # Compute 7-day rolling averages
     sorted_days = sorted(wpm_by_day.keys())
@@ -158,7 +162,7 @@ def plot_data():
     plt.legend(loc='upper left')
     plt.grid(True, which="both", ls="--")
     plt.tight_layout()
-    plt.savefig('macro_wpm_rolling_avg.png')
+    plt.savefig(os.path.join('build', 'macro_wpm_rolling_avg.png'))
 
 # Parsing multiple message files
 file_num = 1
