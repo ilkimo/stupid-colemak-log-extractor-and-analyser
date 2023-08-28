@@ -164,6 +164,25 @@ def plot_data():
     plt.tight_layout()
     plt.savefig(os.path.join('build', 'macro_wpm_rolling_avg.png'))
 
+    # Compute rolling WPM average of the last 100 records
+    rolling_100_avg_values = [
+        sum(wpm_values[max(0, i-99):i+1]) / len(wpm_values[max(0, i-99):i+1]) 
+        for i in range(len(wpm_values))
+    ]
+
+    # Plotting Rolling Average of Last 100 records
+    plt.figure(figsize=(10, 6))
+    plt.plot(range(len(wpm_values)), rolling_100_avg_values, color='purple', label='100-Record Avg WPM', marker='o', markersize=2)
+    plt.title('100-Record Rolling Average WPM')
+    plt.xlabel('Number of Records')
+    plt.ylabel('WPM')
+    plt.yticks(range(0, 101, 5))
+    plt.ylim(0, 100)
+    plt.legend(loc='upper left')
+    plt.grid(True, which="both", ls="--")
+    plt.tight_layout()
+    plt.savefig(os.path.join('build', 'macro_wpm_rolling_100_avg.png'))
+
 # Parsing multiple message files
 file_num = 1
 match_counts = []
