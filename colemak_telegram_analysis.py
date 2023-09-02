@@ -5,6 +5,10 @@ import matplotlib.pyplot as plt
 from matplotlib.dates import MonthLocator, DateFormatter, DayLocator
 from collections import defaultdict
 import os
+import numpy as np
+import imageio
+from mpl_toolkits.mplot3d import Axes3D
+import pandas as pd
 
 pattern = r"\{layout=colemak_DH,wpm=(\d+(?:\.\d)?),accuracy=(\d+(?:\.\d)?%)\}"
 filtered_data = []
@@ -183,6 +187,115 @@ def plot_data():
     plt.tight_layout()
     plt.savefig(os.path.join('build', 'macro_wpm_rolling_100_avg.png'))
 
+    # Curve fitting using a degree 2 polynomial (quadratic fit)
+    x_values = np.array(range(len(rolling_100_avg_values)))
+    coeffs = np.polyfit(x_values, rolling_100_avg_values, 2)
+    polynomial = np.poly1d(coeffs)
+    y_fit = polynomial(x_values)
+
+    # Plotting Rolling Average of Last 100 records with curve fit
+    plt.figure(figsize=(10, 6))
+    plt.plot(x_values, rolling_100_avg_values, color='purple', label='100-Record Avg WPM', marker='o', markersize=2)
+    plt.plot(x_values, y_fit, color='orange', label='Fitted Curve', linewidth=2)
+    plt.title('100-Record Rolling Average WPM with Curve Fit')
+    plt.xlabel('Number of Records')
+    plt.ylabel('WPM')
+    plt.yticks(range(0, 101, 5))
+    plt.ylim(0, 100)
+    plt.legend(loc='upper left')
+    plt.grid(True, which="both", ls="--")
+    plt.tight_layout()
+    plt.savefig(os.path.join('build', 'macro_wpm_rolling_100_avg_fit.png'))
+
+    # rotating_3d_video(dates, wpm_values)
+
+def rolling_avg_wpm_over_days(dates, wpm_values, max_days=62):
+    result = []
+    for num_days in range(1, max_days + 1):
+        rolling_avg_values = []
+        for i in range(len(dates)):
+            last_days = wpm_values[max(0, i-num_days+1):i+1]
+            avg_wpm = sum(last_days) / len(last_days)
+            rolling_avg_values.append(avg_wpm)
+        result.append(rolling_avg_values)
+    return np.array(result)
+
+def rotating_3d_video(dates, wpm_values, duration=5, rotation_degrees=360):
+    # Determine the new figure size
+    default_figsize = plt.rcParams["figure.figsize"]
+    new_figsize = (2.50 * default_figsize[0], 2.50 * default_figsize[1])
+
+    # Create the figure with the increased size
+    fig = plt.figure(figsize=new_figsize)
+    ax = fig.add_subplot(111, projection='3d')
+    
+    Z = rolling_avg_wpm_over_days(dates, wpm_values)
+    date_diffs = [(date - dates[0]).days for date in dates]
+    X, Y = np.meshgrid(date_diffs, np.arange(1, Z.shape[0] + 1, dtype=float))
+    
+    ax.set_xlabel('Time')
+    ax.set_ylabel('Rolling Average Days')
+    ax.set_zlabel('WPM')
+    
+    # Set the z-axis (WPM axis) limits
+    ax.set_zlim(min(wpm_values), max(wpm_values))
+    ax.set_ylim(1, 62)
+    
+    # Generate the list of the first of the month dates
+    start_date = dates[0].replace(day=1)
+    end_date = dates[-1].replace(day=1) + pd.DateOffset(months=1)
+    first_of_month_dates = pd.date_range(start_date, end_date, freq='MS')
+    
+    month_ticks = [(date - dates[0]).days for date in first_of_month_dates]
+    
+    # Sort the list of first_of_month_dates
+    sorted_dates = sorted(first_of_month_dates)
+
+    # Construct the month_names list
+    month_names = [date.strftime('%b') for date in sorted_dates]
+
+    # Modify the first and last elements to include the year
+    month_names[0] = sorted_dates[0].strftime('%b %Y')
+    month_names[-1] = sorted_dates[-1].strftime('%b %Y')
+
+    ax.set_xticks(month_ticks)
+    ax.set_xticklabels(month_names, rotation=45)  # Adding rotation to the labels for better readability
+    
+    # Color the surface based on the WPM values with the 'rainbow' colormap
+    wframe = ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap='rainbow', shade=True)
+    fig.colorbar(wframe, ax=ax, label='WPM')  # Adding a colorbar to the side of the plot for reference
+
+    # Ensure directory exists
+    video_dir = os.path.join("build", "prova")
+    if not os.path.exists(video_dir):
+        os.makedirs(video_dir)
+
+    ax.view_init(elev=30)
+    
+    filenames = []
+    num_frames = duration * 5  # 5 FPS
+    for i in range(num_frames):
+        ax.view_init(elev=30, azim=i*(rotation_degrees/num_frames))
+        filename = os.path.join(video_dir, f"tmp_frame_{i}.png")
+        plt.savefig(filename)
+        filenames.append(filename)
+        
+        # Print percentage progress
+        progress = (i + 1) / num_frames * 100
+        print(f"Rendering progress: {progress:.2f}%")
+
+    # Create video using imageio
+    with imageio.get_writer(os.path.join(video_dir, '3d_rotation_video.mp4'), fps=13) as writer:
+        for filename in filenames:
+            image = imageio.imread(filename)
+            writer.append_data(image)
+            
+    # Remove temporary files
+    for filename in filenames:
+        os.remove(filename)
+
+
+
 # Parsing multiple message files
 file_num = 1
 match_counts = []
@@ -206,3 +319,4 @@ for file_name, count in match_counts:
 
 # Generate plots
 plot_data()
+
