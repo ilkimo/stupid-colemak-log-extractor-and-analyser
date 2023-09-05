@@ -16,5 +16,5 @@ docker build -t telegram-analysis .
 
 # Run Docker Image
 ```/bin/bash
-docker run -v $(pwd):/app telegram-analysis
+docker run -d -v $(pwd):/app telegram-analysis
 ```
