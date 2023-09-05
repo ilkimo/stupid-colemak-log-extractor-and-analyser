@@ -207,9 +207,9 @@ def plot_data():
     plt.tight_layout()
     plt.savefig(os.path.join('build', 'macro_wpm_rolling_100_avg_fit.png'))
 
-    # rotating_3d_video(dates, wpm_values)
+    rotating_3d_video(dates, wpm_values)
 
-def rolling_avg_wpm_over_days(dates, wpm_values, max_days=62):
+def rolling_avg_wpm_over_days(dates, wpm_values, max_days=122):
     result = []
     for num_days in range(1, max_days + 1):
         rolling_avg_values = []
@@ -220,7 +220,7 @@ def rolling_avg_wpm_over_days(dates, wpm_values, max_days=62):
         result.append(rolling_avg_values)
     return np.array(result)
 
-def rotating_3d_video(dates, wpm_values, duration=5, rotation_degrees=360):
+def rotating_3d_video(dates, wpm_values, duration=3, rotation_degrees=360):
     # Determine the new figure size
     default_figsize = plt.rcParams["figure.figsize"]
     new_figsize = (2.50 * default_figsize[0], 2.50 * default_figsize[1])
@@ -239,7 +239,7 @@ def rotating_3d_video(dates, wpm_values, duration=5, rotation_degrees=360):
     
     # Set the z-axis (WPM axis) limits
     ax.set_zlim(min(wpm_values), max(wpm_values))
-    ax.set_ylim(1, 62)
+    ax.set_ylim(1, 120)
     
     # Generate the list of the first of the month dates
     start_date = dates[0].replace(day=1)
@@ -261,19 +261,19 @@ def rotating_3d_video(dates, wpm_values, duration=5, rotation_degrees=360):
     ax.set_xticks(month_ticks)
     ax.set_xticklabels(month_names, rotation=45)  # Adding rotation to the labels for better readability
     
-    # Color the surface based on the WPM values with the 'rainbow' colormap
-    wframe = ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap='rainbow', shade=True)
+    # Color the surface based on the WPM values with the 'twilight' colormap
+    wframe = ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap='twilight', shade=True, vmin=min(wpm_values), vmax=max(wpm_values))
     fig.colorbar(wframe, ax=ax, label='WPM')  # Adding a colorbar to the side of the plot for reference
 
     # Ensure directory exists
-    video_dir = os.path.join("build", "prova")
+    video_dir = os.path.join("build", "video")
     if not os.path.exists(video_dir):
         os.makedirs(video_dir)
 
     ax.view_init(elev=30)
     
     filenames = []
-    num_frames = duration * 5  # 5 FPS
+    num_frames = duration * 10  # 35 FPS
     for i in range(num_frames):
         ax.view_init(elev=30, azim=i*(rotation_degrees/num_frames))
         filename = os.path.join(video_dir, f"tmp_frame_{i}.png")
@@ -285,7 +285,7 @@ def rotating_3d_video(dates, wpm_values, duration=5, rotation_degrees=360):
         print(f"Rendering progress: {progress:.2f}%")
 
     # Create video using imageio
-    with imageio.get_writer(os.path.join(video_dir, '3d_rotation_video.mp4'), fps=13) as writer:
+    with imageio.get_writer(os.path.join(video_dir, '3d_rotation_video.mp4'), fps=35) as writer:
         for filename in filenames:
             image = imageio.imread(filename)
             writer.append_data(image)
