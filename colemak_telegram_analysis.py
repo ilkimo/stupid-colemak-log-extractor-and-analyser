@@ -127,10 +127,6 @@ def plot_data():
 
     # Plotting Max, Min and Median WPM with connected lines
     plt.figure(figsize=(10, 6))
-    plt.plot(days, max_wpm_values, color='blue', label='Max WPM', marker='o', markersize=2)
-    plt.plot(days, min_wpm_values, color='red', label='Min WPM', marker='o', markersize=2)
-    plt.plot(days, median_wpm_values, color='black', label='Median WPM', marker='o', markersize=2)
-
     plt.title('WPM Statistics Over Time')
     plt.xlabel('Date')
     plt.ylabel('WPM')
@@ -143,6 +139,10 @@ def plot_data():
     ax2.yaxis.set_ticks_position('none')
     ax2.set_yticks(range(0, 121, 5))
     ax2.set_ylim(0, 120)
+
+    plt.plot(days, max_wpm_values, color='blue', label='Max WPM', marker='o', markersize=2)
+    plt.plot(days, min_wpm_values, color='red', label='Min WPM', marker='o', markersize=2)
+    plt.plot(days, median_wpm_values, color='black', label='Median WPM', marker='o', markersize=2)
 
     # Formatting x-axis to display months
     ax = plt.gca()
@@ -165,7 +165,6 @@ def plot_data():
 
     # Plotting 7-day Rolling Averages
     plt.figure(figsize=(10, 6))
-    plt.plot(sorted_days, rolling_avg_values, color='green', label='7-day Avg WPM', marker='o', markersize=2)
     plt.title('7-day Rolling Average WPM Over Time')
     plt.xlabel('Date')
     plt.ylabel('WPM')
@@ -178,6 +177,8 @@ def plot_data():
     ax2.yaxis.set_ticks_position('none')
     ax2.set_yticks(range(0, 121, 5))
     ax2.set_ylim(0, 120)
+    plt.plot(sorted_days, rolling_avg_values, color='green', label='7-day Avg WPM', marker='o', markersize=2)
+
 
     # Formatting x-axis to display months
     ax = plt.gca()
@@ -197,7 +198,6 @@ def plot_data():
 
     # Plotting Rolling Average of Last 100 records
     plt.figure(figsize=(10, 6))
-    plt.plot(range(len(wpm_values)), rolling_100_avg_values, color='purple', label='100-Record Avg WPM', marker='o', markersize=2)
     plt.title('100-Record Rolling Average WPM')
     plt.xlabel('Number of Records')
     plt.ylabel('WPM')
@@ -210,6 +210,7 @@ def plot_data():
     ax2.yaxis.set_ticks_position('none')
     ax2.set_yticks(range(0, 121, 5))
     ax2.set_ylim(0, 120)
+    plt.plot(range(len(wpm_values)), rolling_100_avg_values, color='purple', label='100-Record Avg WPM', marker='o', markersize=2)
 
     plt.legend(loc='upper left')
     plt.grid(True, which="both", ls="--")
@@ -224,9 +225,6 @@ def plot_data():
 
     # Plotting Rolling Average of Last 100 records with curve fit
     plt.figure(figsize=(10, 6))
-    plt.plot(x_values, rolling_100_avg_values, color='purple', label='100-Record Avg WPM', marker='o', markersize=2)
-    plt.plot(x_values, y_fit, color='orange', label='Fitted Curve', linewidth=2)
-    plt.title('100-Record Rolling Average WPM with Curve Fit')
     plt.xlabel('Number of Records')
     plt.ylabel('WPM')
     plt.yticks(range(0, 121, 5))
@@ -238,7 +236,10 @@ def plot_data():
     ax2.yaxis.set_ticks_position('none')
     ax2.set_yticks(range(0, 121, 5))
     ax2.set_ylim(0, 120)
+    plt.title('100-Record Rolling Average WPM with Curve Fit')
 
+    plt.plot(x_values, rolling_100_avg_values, color='purple', label='100-Record Avg WPM', marker='o', markersize=2)
+    plt.plot(x_values, y_fit, color='orange', label='Fitted Curve', linewidth=2)
     plt.legend(loc='upper left')
     plt.grid(True, which="both", ls="--")
     plt.tight_layout()
