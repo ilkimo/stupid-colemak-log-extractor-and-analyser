@@ -4,6 +4,7 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 from matplotlib.dates import MonthLocator, DateFormatter, DayLocator
 from collections import defaultdict
+import math
 import os
 import numpy as np
 import imageio
@@ -12,6 +13,7 @@ import pandas as pd
 
 pattern = r"\{layout=colemak_DH,wpm=(\d+(?:\.\d)?),accuracy=(\d+(?:\.\d)?%)\}"
 filtered_data = []
+ylim = 145
 
 def print_colored(text, color):
     colors = {
@@ -62,6 +64,7 @@ def plot_data():
         os.makedirs("build")
     
     dates, wpm_values, accuracy_values = zip(*filtered_data)
+    min_wpm = math.floor(min(wpm_values) / 5) * 5
     
     # Plotting WPM
     plt.figure(figsize=(10, 6))
@@ -69,15 +72,18 @@ def plot_data():
     plt.title('WPM Over Time')
     plt.xlabel('Date')
     plt.ylabel('WPM')
-    plt.yticks(range(0, 121, 5))  # setting y-axis ticks from 0 to 100, in increments of 5
-    plt.ylim(0, 120)
+    plt.yticks(range(0, ylim, 5))  # setting y-axis ticks from 0 to 100, in increments of 5
+    plt.ylim(min_wpm-5, ylim)
+    plt.axhline(y=100, color='green')
+    plt.axhline(y=120, color='cyan')
+    plt.axhline(y=140, color='#FFDF00')
 
     # Add secondary y-axis on the right
     ax2 = plt.twinx()
     ax2.spines['right'].set_visible(False)
     ax2.yaxis.set_ticks_position('none')
-    ax2.set_yticks(range(0, 121, 5))
-    ax2.set_ylim(0, 120)
+    ax2.set_yticks(range(min_wpm-5, ylim, 5))
+    ax2.set_ylim(min_wpm-5, ylim)
 
     # Formatting x-axis to display months
     month_locator = MonthLocator()  # every month
@@ -130,15 +136,18 @@ def plot_data():
     plt.title('WPM Statistics Over Time')
     plt.xlabel('Date')
     plt.ylabel('WPM')
-    plt.yticks(range(0, 121, 5))
-    plt.ylim(0, 120)
+    plt.yticks(range(min_wpm-5, ylim, 5))
+    plt.ylim(min_wpm-5, ylim)
+    plt.axhline(y=100, color='green')
+    plt.axhline(y=120, color='cyan')
+    plt.axhline(y=140, color='#FFDF00')
 
      # Add secondary y-axis on the right
     ax2 = plt.twinx()
     ax2.spines['right'].set_visible(False)
     ax2.yaxis.set_ticks_position('none')
-    ax2.set_yticks(range(0, 121, 5))
-    ax2.set_ylim(0, 120)
+    ax2.set_yticks(range(min_wpm-5, ylim, 5))
+    ax2.set_ylim(min_wpm-5,  ylim)
 
     plt.plot(days, max_wpm_values, color='blue', label='Max WPM', marker='o', markersize=2)
     plt.plot(days, min_wpm_values, color='red', label='Min WPM', marker='o', markersize=2)
@@ -168,16 +177,19 @@ def plot_data():
     plt.title('7-day Rolling Average WPM Over Time')
     plt.xlabel('Date')
     plt.ylabel('WPM')
-    plt.yticks(range(0, 121, 5))
-    plt.ylim(0, 120)
+    plt.yticks(range(min_wpm-5, ylim, 5))
+    plt.ylim(min_wpm-5, ylim)
+    plt.axhline(y=100, color='green')
+    plt.axhline(y=120, color='cyan')
+    plt.axhline(y=140, color='#FFDF00')
 
      # Add secondary y-axis on the right
     ax2 = plt.twinx()
     ax2.spines['right'].set_visible(False)
     ax2.yaxis.set_ticks_position('none')
-    ax2.set_yticks(range(0, 121, 5))
-    ax2.set_ylim(0, 120)
-    plt.plot(sorted_days, rolling_avg_values, color='green', label='7-day Avg WPM', marker='o', markersize=2)
+    ax2.set_yticks(range(min_wpm-5, ylim, 5))
+    ax2.set_ylim(min_wpm-5, ylim)
+    plt.plot(sorted_days, rolling_avg_values, color='black', label='7-day Avg WPM', marker='o', markersize=2)
 
 
     # Formatting x-axis to display months
@@ -201,15 +213,18 @@ def plot_data():
     plt.title('100-Record Rolling Average WPM')
     plt.xlabel('Number of Records')
     plt.ylabel('WPM')
-    plt.yticks(range(0, 121, 5))
-    plt.ylim(0, 120)
+    plt.yticks(range(min_wpm-5, ylim, 5))
+    plt.ylim(min_wpm-5, ylim)
+    plt.axhline(y=100, color='green')
+    plt.axhline(y=120, color='cyan')
+    plt.axhline(y=140, color='#FFDF00')
 
      # Add secondary y-axis on the right
     ax2 = plt.twinx()
     ax2.spines['right'].set_visible(False)
     ax2.yaxis.set_ticks_position('none')
-    ax2.set_yticks(range(0, 121, 5))
-    ax2.set_ylim(0, 120)
+    ax2.set_yticks(range(min_wpm-5, ylim, 5))
+    ax2.set_ylim(min_wpm-5, ylim)
     plt.plot(range(len(wpm_values)), rolling_100_avg_values, color='purple', label='100-Record Avg WPM', marker='o', markersize=2)
 
     plt.legend(loc='upper left')
@@ -227,15 +242,18 @@ def plot_data():
     plt.figure(figsize=(10, 6))
     plt.xlabel('Number of Records')
     plt.ylabel('WPM')
-    plt.yticks(range(0, 121, 5))
-    plt.ylim(0, 120)
+    plt.yticks(range(min_wpm-5, ylim, 5))
+    plt.ylim(min_wpm-5, ylim)
+    plt.axhline(y=100, color='green')
+    plt.axhline(y=120, color='cyan')
+    plt.axhline(y=140, color='#FFDF00')
 
      # Add secondary y-axis on the right
     ax2 = plt.twinx()
     ax2.spines['right'].set_visible(False)
     ax2.yaxis.set_ticks_position('none')
-    ax2.set_yticks(range(0, 121, 5))
-    ax2.set_ylim(0, 120)
+    ax2.set_yticks(range(min_wpm-5, ylim, 5))
+    ax2.set_ylim(min_wpm-5, ylim)
     plt.title('100-Record Rolling Average WPM with Curve Fit')
 
     plt.plot(x_values, rolling_100_avg_values, color='purple', label='100-Record Avg WPM', marker='o', markersize=2)
@@ -277,7 +295,7 @@ def rotating_3d_video(dates, wpm_values, duration=8, rotation_degrees=360):
     
     # Set the z-axis (WPM axis) limits
     ax.set_zlim(min(wpm_values), max(wpm_values))
-    ax.set_ylim(1, 120)
+    ax.set_ylim(1, ylim)
     
     # Generate the list of the first of the month dates
     start_date = dates[0].replace(day=1)
