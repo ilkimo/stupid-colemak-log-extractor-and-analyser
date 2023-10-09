@@ -69,8 +69,15 @@ def plot_data():
     plt.title('WPM Over Time')
     plt.xlabel('Date')
     plt.ylabel('WPM')
-    plt.yticks(range(0, 101, 5))  # setting y-axis ticks from 0 to 100, in increments of 5
-    plt.ylim(0, 100)
+    plt.yticks(range(0, 121, 5))  # setting y-axis ticks from 0 to 100, in increments of 5
+    plt.ylim(0, 120)
+
+    # Add secondary y-axis on the right
+    ax2 = plt.twinx()
+    ax2.spines['right'].set_visible(False)
+    ax2.yaxis.set_ticks_position('none')
+    ax2.set_yticks(range(0, 121, 5))
+    ax2.set_ylim(0, 120)
 
     # Formatting x-axis to display months
     month_locator = MonthLocator()  # every month
@@ -93,7 +100,7 @@ def plot_data():
     min_accuracy = min(accuracy_values)
     tick_spacing = 2  # Define the desired tick spacing here
     starting_tick = tick_spacing * (min_accuracy // tick_spacing)
-    y_ticks = [tick for tick in range(int(starting_tick), 101, tick_spacing)]
+    y_ticks = [tick for tick in range(int(starting_tick), 121, tick_spacing)]
     
     plt.yticks(y_ticks)
     plt.ylim(min_accuracy, 100)
@@ -127,8 +134,15 @@ def plot_data():
     plt.title('WPM Statistics Over Time')
     plt.xlabel('Date')
     plt.ylabel('WPM')
-    plt.yticks(range(0, 101, 5))
-    plt.ylim(0, 100)
+    plt.yticks(range(0, 121, 5))
+    plt.ylim(0, 120)
+
+     # Add secondary y-axis on the right
+    ax2 = plt.twinx()
+    ax2.spines['right'].set_visible(False)
+    ax2.yaxis.set_ticks_position('none')
+    ax2.set_yticks(range(0, 121, 5))
+    ax2.set_ylim(0, 120)
 
     # Formatting x-axis to display months
     ax = plt.gca()
@@ -155,8 +169,15 @@ def plot_data():
     plt.title('7-day Rolling Average WPM Over Time')
     plt.xlabel('Date')
     plt.ylabel('WPM')
-    plt.yticks(range(0, 101, 5))
-    plt.ylim(0, 100)
+    plt.yticks(range(0, 121, 5))
+    plt.ylim(0, 120)
+
+     # Add secondary y-axis on the right
+    ax2 = plt.twinx()
+    ax2.spines['right'].set_visible(False)
+    ax2.yaxis.set_ticks_position('none')
+    ax2.set_yticks(range(0, 121, 5))
+    ax2.set_ylim(0, 120)
 
     # Formatting x-axis to display months
     ax = plt.gca()
@@ -180,8 +201,16 @@ def plot_data():
     plt.title('100-Record Rolling Average WPM')
     plt.xlabel('Number of Records')
     plt.ylabel('WPM')
-    plt.yticks(range(0, 101, 5))
-    plt.ylim(0, 100)
+    plt.yticks(range(0, 121, 5))
+    plt.ylim(0, 120)
+
+     # Add secondary y-axis on the right
+    ax2 = plt.twinx()
+    ax2.spines['right'].set_visible(False)
+    ax2.yaxis.set_ticks_position('none')
+    ax2.set_yticks(range(0, 121, 5))
+    ax2.set_ylim(0, 120)
+
     plt.legend(loc='upper left')
     plt.grid(True, which="both", ls="--")
     plt.tight_layout()
@@ -200,14 +229,22 @@ def plot_data():
     plt.title('100-Record Rolling Average WPM with Curve Fit')
     plt.xlabel('Number of Records')
     plt.ylabel('WPM')
-    plt.yticks(range(0, 101, 5))
-    plt.ylim(0, 100)
+    plt.yticks(range(0, 121, 5))
+    plt.ylim(0, 120)
+
+     # Add secondary y-axis on the right
+    ax2 = plt.twinx()
+    ax2.spines['right'].set_visible(False)
+    ax2.yaxis.set_ticks_position('none')
+    ax2.set_yticks(range(0, 121, 5))
+    ax2.set_ylim(0, 120)
+
     plt.legend(loc='upper left')
     plt.grid(True, which="both", ls="--")
     plt.tight_layout()
     plt.savefig(os.path.join('build', 'macro_wpm_rolling_100_avg_fit.png'))
 
-    rotating_3d_video(dates, wpm_values)
+    #rotating_3d_video(dates, wpm_values)
 
 def rolling_avg_wpm_over_days(dates, wpm_values, max_days=122):
     result = []
@@ -220,7 +257,7 @@ def rolling_avg_wpm_over_days(dates, wpm_values, max_days=122):
         result.append(rolling_avg_values)
     return np.array(result)
 
-def rotating_3d_video(dates, wpm_values, duration=3, rotation_degrees=360):
+def rotating_3d_video(dates, wpm_values, duration=8, rotation_degrees=360):
     # Determine the new figure size
     default_figsize = plt.rcParams["figure.figsize"]
     new_figsize = (2.50 * default_figsize[0], 2.50 * default_figsize[1])
@@ -273,7 +310,7 @@ def rotating_3d_video(dates, wpm_values, duration=3, rotation_degrees=360):
     ax.view_init(elev=30)
     
     filenames = []
-    num_frames = duration * 10  # 35 FPS
+    num_frames = duration * 35  # 35 FPS
     for i in range(num_frames):
         ax.view_init(elev=30, azim=i*(rotation_degrees/num_frames))
         filename = os.path.join(video_dir, f"tmp_frame_{i}.png")
