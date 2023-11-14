@@ -1,0 +1,2 @@
+1) print every word that contains ion on a separate line, from the words in the file
+cat 1000-common-english-words.txt | tr ' ' '\n' | grep ion

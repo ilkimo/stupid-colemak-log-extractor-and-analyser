@@ -1,0 +1,20 @@
+Fingers:
+- L1 --> left thumb
+- L2 --> left index
+- L3 --> left middle finger
+- L4 --> left ring finger
+- L5 --> left pinky
+- R1 --> right thumb
+- R2 --> right index
+- R3 --> right middle finger
+- R4 --> right ring finger
+- R5 --> right pinky
+
+bigrams:
+- dg --> (L3)d(L2)g		example "edge" --> e + (L3)d(L2)g + e
+- mn --> (R1)m(R2)n		example "column" --> colu + (R1)m(R2)n
+
+trigrams:
+- rwa --> (L2)r(L3)w(L4)a 	example: "forward" --> fo + (L2)r(L3)w(L4)a + rd
+- ghb --> (L2)g(R1)h(L3)b	example: "neighbor" --> nei + (L2)g(R1)h(L3)b + or
+
